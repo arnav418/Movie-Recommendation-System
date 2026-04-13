@@ -4,11 +4,18 @@ import pandas as pd
 import requests
 import os
 from dotenv import load_dotenv
+from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.feature_extraction.text import CountVectorizer
 load_dotenv()
 
 # Load data
 movies = pickle.load(open('movies.pkl', 'rb'))
-similarity = pickle.load(open('similarity.pkl', 'rb'))
+# Build similarity dynamically
+cv = CountVectorizer(max_features=5000, stop_words='english')
+vectors = cv.fit_transform(movies['tags']).toarray()
+
+similarity = cosine_similarity(vectors)
+
 
 # 🔐 Use environment variable (important for deployment)
 API_KEY = os.getenv("TMDB_API_KEY")
