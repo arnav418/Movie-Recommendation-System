@@ -41,7 +41,7 @@ def fetch_poster(movie_id):
         return "https://via.placeholder.com/500x750?text=Error"
 
 # Recommendation function
-def recommend(movie):
+
     movie_index = movies[movies['title'] == movie].index[0]
     distances = similarity[movie_index]
 
@@ -59,7 +59,32 @@ def recommend(movie):
         recommended_movies.append(movies.iloc[i[0]].title)
         recommended_posters.append(fetch_poster(movie_id))
 
+    return recommended_movies, recommended_poster
+
+def recommend(movie):
+    cv = CountVectorizer(max_features=5000, stop_words='english')
+    vectors = cv.fit_transform(movies['tags'])
+
+    movie_index = movies[movies['title'] == movie].index[0]
+
+    similarity = cosine_similarity(vectors[movie_index], vectors).flatten()
+
+    movies_list = sorted(
+        list(enumerate(similarity)),
+        key=lambda x: x[1],
+        reverse=True
+    )[1:11]
+
+    recommended_movies = []
+    recommended_posters = []
+
+    for i in movies_list:
+        movie_id = movies.iloc[i[0]].movie_id
+        recommended_movies.append(movies.iloc[i[0]].title)
+        recommended_posters.append(fetch_poster(movie_id))
+
     return recommended_movies, recommended_posters
+
 
 # UI
 st.set_page_config(page_title="Movie Recommender", layout="wide")
