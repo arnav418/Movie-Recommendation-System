@@ -1,0 +1,17 @@
+# Environment variables (VERY IMPORTANT)
+.env
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Jupyter notebooks (optional)
+.ipynb_checkpoints/
+
+# OS files
+.DS_Store
+
+# VS Code settings (optional)
+.vscode/
+
+similarity.pkl
